@@ -11,9 +11,9 @@ database = {}
 
 
 @app.post("/receipts/process")
-def process_receipts(receipt = None):
+def process_receipts(receipt=None):
 
-    if receipt is None:
+    if receipt is None: # This is added so that we can pass a recipt to this function for the testing below
         receipt = request.get_json(force=True, silent=True)
         if receipt is None:
             return "Please add a JSON body with a receipt."
@@ -38,6 +38,8 @@ def get_receipt_points(id):
 
 
 @app.get("/receipts/<any_non_uuid>/points")
+# I wanted to try using the Variable Rules Converter types above,
+# this is here to catch someone trying to go to "/receipts/<uuid:id>/points" but not using a valid UUID
 def return_error_if_not_valid_uuid(any_non_uuid):
     return f"{any_non_uuid} is not a valid UUID. Please try again with a valid UUID."
 
@@ -48,7 +50,10 @@ def calculate_receipt_points(receipt):
     points += len(re.sub(r'\W+', '', receipt["retailer"]))
 
     if not (float(receipt["total"]) % 1.00):
-        points += 75
+        points += 75 # This can be 75 instead of 50 because if it is divisible by 1.00 it will always
+                     # be divisible by 0.25 and that lets us use an elif below saving one calculation.
+                     # I'd argue its better here to not do it this way and always calculate twice just
+                     # to make it more readable but I wanted to show a bit of out-of-the-box thinking!
     elif not (float(receipt["total"]) % 0.25):
         points += 25
 
@@ -61,7 +66,7 @@ def calculate_receipt_points(receipt):
     if (int(receipt["purchaseDate"][-1]) % 2):
         points += 6
 
-    purchase_time = float(receipt["purchaseTime"].replace(":", "."))
+    purchase_time = float(receipt["purchaseTime"].replace(":", ".")) # Turns the time format into a float!
     if (purchase_time > 14 and
         purchase_time < 16):
         points += 10
@@ -70,7 +75,7 @@ def calculate_receipt_points(receipt):
 
 
 # ||||||||||||||||||||||||||||||||||||||||||
-print("-------- Tests --------")
+print("-------- Tests --------") # This will show the results of both endpoints in the console using the /example receipts
 print()
 print("morning-receipt:")
 morning_receipt_json_file = open("./examples/morning-receipt.json")

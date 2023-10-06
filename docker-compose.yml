@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  receipt-processor-challenge-api:
+    image: "receipt-processor-challenge-api"
+    build:
+      context: .
+    ports:
+      - 5005:80

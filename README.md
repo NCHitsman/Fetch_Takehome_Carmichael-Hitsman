@@ -1,6 +1,6 @@
 # How To Run
 
-1. Enter "cd Fetch_Takehome_Carmichael-Hitsman"
+1. Enter "cd .\Fetch_Takehome_Carmichael-Hitsman"
 2. Enter "docker compose up -d --build" into the command line
 3. Check logs to see results of examples:
     - If you are not using the Docker application enter "docker ps" in your command line followed by "docker logs -f {CONTAINER ID}" using the CONTAINER ID shown from the docker ps command.
